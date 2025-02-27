@@ -32,7 +32,7 @@ exports.addCustomer = async (req, res) => {
 exports.getCustomers = async (req, res) => {
   try {
     const customers = await Customer.find();
-    res.json({ success: true, customers });
+    res.json(customers);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
