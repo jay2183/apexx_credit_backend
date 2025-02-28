@@ -40,8 +40,9 @@ exports.sendOTP = async (req, res) => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
-        subject: "Your OTP Code For Apexx Credit App",
-        text: `Your OTP code is: ${otp}`,
+        subject: "Your OTP Code For APEXX CREDIT App",
+        
+        text: `${otp} is your OTP for registering APEXX CREDIT mobile app. Do not share it with anyone.`,
         html: `<p>Your OTP code is <b>${otp}</b></p>`
     };
    console.log("sender email ==",process.env.EMAIL,
@@ -52,7 +53,7 @@ exports.sendOTP = async (req, res) => {
         console.log("error sending mail==",err);
         
         if (err) return res.status(500).json({ message: "Error sending OTP", error: err });
-        res.json({ message: "OTP sent successfully" });
+        res.json({ message: `OTP sent successfully on ${email}.` });
     });
 };
 
@@ -76,8 +77,9 @@ exports.verifyOTP = async (req, res) => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
-        subject: "Email verified",
+        subject: `Email ${email} verified`,
         text: `Email verified successfully from Apexx Credit App`,
+        text: `Dear Customer, APEXX CREDIT app successfully enabled`,
         
     };
     transporter.sendMail(mailOptions)
