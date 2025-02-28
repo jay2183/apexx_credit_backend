@@ -81,5 +81,5 @@ exports.verifyOTP = async (req, res) => {
         
     };
     transporter.sendMail(mailOptions)
-    res.json({ message: "User registered successfully", token });
+    res.json({ message: "Email verified successfully", token:token ,userId:user._id,email:email });
 };
