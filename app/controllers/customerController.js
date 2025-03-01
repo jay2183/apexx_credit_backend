@@ -29,11 +29,44 @@ exports.addCustomer = async (req, res) => {
 };
 
 // Fetch all customers
-exports.getCustomers = async (req, res) => {
+// exports.getCustomers = async (req, res) => {
+//   try {
+//     const customers = await Customer.find();
+//     res.json(customers);
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+exports.getCustomersByUserId = async (req, res) => {
   try {
-    const customers = await Customer.find();
+    const userId = req.user._id; // Assuming you get `req.user._id` from authentication middleware
+    const customers = await Customer.find({ userId });
+
+    if (!customers.length) {
+      return res.status(404).json({ success: false, message: "No customers found for this user." });
+    }
+
     res.json(customers);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+
+exports.deleteCustomer = async (req, res) => {
+  try {
+    const customerId = req.params.id;
+
+    const deletedCustomer = await Customer.findByIdAndDelete(customerId);
+
+    if (!deletedCustomer) {
+      return res.status(404).json({ success: false, message: "Customer not found" });
+    }
+
+    res.json({ success: true, message: "Customer deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
