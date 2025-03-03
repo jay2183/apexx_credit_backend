@@ -77,9 +77,9 @@ const getTransactionsByCustomerId = async (req, res) => {
     const customerId = req.params.customerId;
     const transactions = await Transaction.find({ customerId });
 
-    if (!transactions.length) {
-      return res.status(404).json({ message: "No transactions found for this customer." });
-    }
+    // if (!transactions.length) {
+    //   return res.status(404).json([]);
+    // }
 
     res.json(transactions);
   } catch (error) {
