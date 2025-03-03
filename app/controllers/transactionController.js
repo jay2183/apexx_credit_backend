@@ -6,7 +6,7 @@ const createTransaction = async (req, res) => {
     const { customerId, amountGiven, amountReceived, date, description } = req.body;
 
     if (!customerId || !date) {
-      return res.status(400).json({ message: "Customer ID, date, and description are required." });
+      return res.status(400).json({ message: "Customer ID, date are required." });
     }
 
     if ((amountGiven && amountReceived) || (!amountGiven && !amountReceived)) {
