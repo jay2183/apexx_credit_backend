@@ -52,6 +52,25 @@ const createTransaction = async (req, res) => {
   }
 };
 
+
+const deleteTransaction = async (req, res) => {
+  try {
+    const { id } = req.params; // Get transaction ID from URL params
+
+    // Check if the transaction exists
+    const transaction = await Transaction.findById(id);
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+
+    // Delete the transaction
+    await Transaction.findByIdAndDelete(id);
+    res.status(200).json({ message: "Transaction deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Database error", error: error.message });
+  }
+};
+
 // Get transactions by customer ID
 const getTransactionsByCustomerId = async (req, res) => {
   try {
@@ -68,4 +87,4 @@ const getTransactionsByCustomerId = async (req, res) => {
   }
 };
 
-module.exports = { createTransaction, getTransactionsByCustomerId };
+module.exports = { createTransaction, getTransactionsByCustomerId,deleteTransaction };
