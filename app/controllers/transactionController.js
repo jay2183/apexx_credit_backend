@@ -3,22 +3,50 @@ const Transaction = require("../models/transaction");
 // Create a new transaction
 const createTransaction = async (req, res) => {
   try {
-    const { customerId, amountGiven, amountRemaining, date, description } = req.body;
+    const { customerId, amountGiven, amountReceived, date, description } = req.body;
 
-    if (!customerId || !amountGiven || !amountRemaining || !date || !description) {
-      return res.status(400).json({ message: "All fields are required." });
+    if (!customerId || !date || !description) {
+      return res.status(400).json({ message: "Customer ID, date, and description are required." });
     }
 
+    if ((amountGiven && amountReceived) || (!amountGiven && !amountReceived)) {
+      return res.status(400).json({ message: "Provide only one of amountGiven or amountReceived." });
+    }
+
+    // Find all past transactions for the given customer
+    const transactions = await Transaction.find({ customerId });
+
+    // Calculate total given and received amounts
+    const totalAmountGiven = transactions.reduce((sum, txn) => sum + txn.amountGiven, 0);
+    const totalAmountReceived = transactions.reduce((sum, txn) => sum + txn.amountReceived, 0);
+
+    // Set amountGiven to 0 if amountReceived is provided, and vice versa
+    const newAmountGiven = amountGiven || 0;
+    const newAmountReceived = amountReceived || 0;
+
+    // Calculate new totals after adding the current transaction
+    const updatedTotalGiven = totalAmountGiven + newAmountGiven;
+    const updatedTotalReceived = totalAmountReceived + newAmountReceived;
+
+    // Calculate the balance (amountReceived - amountGiven)
+    const calculatedAmount = updatedTotalReceived - updatedTotalGiven;
+
+    // Create new transaction entry
     const newTransaction = new Transaction({
       customerId,
-      amountGiven,
-      amountRemaining,
+      amountGiven: newAmountGiven,
+      amountReceived: newAmountReceived,
+      calculatedAmount,
       date,
       description,
     });
 
     await newTransaction.save();
-    res.status(201).json({ message: "Transaction created successfully", transaction: newTransaction });
+
+    res.status(201).json({ 
+      message: "Transaction created successfully", 
+      transaction: newTransaction 
+    });
   } catch (error) {
     res.status(500).json({ message: "Database error", error: error.message });
   }
