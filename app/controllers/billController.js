@@ -1,8 +1,28 @@
 const Bill = require("../models/bill");
+const BillNum = require("../models/billNum");
 
 exports.createBill = async (req, res) => {
     try {
+      const { userId } = req.body;
       const newBill = new Bill(req.body);
+
+      let billNumEntry = await BillNum.findOne({ userId });
+
+      if (!billNumEntry) {
+        // If no previous entry, create one with billNumber = 1
+        billNumEntry = new BillNum({ userId, billNumber: 1 });
+      } else {
+        // Increment bill number
+        billNumEntry.billNumber += 1;
+      }
+  
+      // Save or update the bill number
+      await billNumEntry.save();
+
+    // Create new bill
+   
+
+   
       await newBill.save();
       res.status(201).json({ success: true, data: newBill });
     } catch (error) {
@@ -40,3 +60,21 @@ exports.createBill = async (req, res) => {
       res.status(500).json({ success: false, error: error.message });
     }
   };
+
+  
+
+exports.getBillNumber = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find the latest bill for the user
+    const lastBill = await BillNum.findOne({ userId }).sort({ billNumber: -1 }).limit(1);
+
+    // Calculate the next bill number
+    const nextBillNumber = lastBill ? lastBill.billNumber + 1 : 1;
+
+    res.status(200).json({ success: true, billNumber: nextBillNumber });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
