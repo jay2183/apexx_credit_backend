@@ -9,6 +9,6 @@ router.post("/",authMiddleware, createBill);
 router.put("/:id",authMiddleware, editBill);
 router.delete("/:id",authMiddleware, deleteBill);
 router.get("/:userId",authMiddleware, getBillsByUser);
-router.get("/numer/:userId",authMiddleware, getBillNum);
+router.get("/number/:userId",authMiddleware, getBillNum);
 
 module.exports = router;
