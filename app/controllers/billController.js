@@ -62,7 +62,6 @@ exports.createBill = async (req, res) => {
   };
 
   
-
 exports.getBillNumber = async (req, res) => {
   try {
     const { userId } = req.params;
