@@ -13,9 +13,11 @@ const billSchema = new mongoose.Schema({
         gst: String,
         cess: Number,
         hsnCode: String,
+        subTotal: String
       },
     ],
     notes: String,
+    total: String
   });
 
   module.exports = mongoose.model("Bill", billSchema);
