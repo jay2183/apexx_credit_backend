@@ -55,7 +55,7 @@ exports.createBill = async (req, res) => {
   exports.getBillsByUser = async (req, res) => {
     try {
       const bills = await Bill.find({ userId: req.params.userId });
-      res.json({ success: true, data: bills });
+      res.json( bills );
     } catch (error) {
       res.status(500).json({ success: false, error: error.message });
     }
